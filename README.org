@@ -1,0 +1,8 @@
+* My Next browser init file
+
+https://github.com/next-browser/next
+
+https://github.com/atlas-engineer/next/blob/master/documents/MANUAL.org
+
+
+To explore: literate programing. https://github.com/mmontone/erudite
