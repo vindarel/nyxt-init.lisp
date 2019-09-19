@@ -6,3 +6,23 @@ https://github.com/atlas-engineer/next/blob/master/documents/MANUAL.org
 
 
 To explore: literate programing. https://github.com/mmontone/erudite
+
+
+* Hooks
+** Unused
+
+These  are  working©,  but  I  don't  use  them  (they're  either  too
+revolutionnary either too dumb :p ).
+
+*** Automatically download a Youtube video
+
+#+begin_src lisp
+(defun auto-yt-dl (url)
+  "Download this url asynchronously to /tmp/videos, according youtube-dl is installed globally."
+  (when (search "www.youtube.com" url)
+    (log:info "Youtube: downloading ~a" url)
+    (uiop:launch-program (list "youtube-dl" url "-o" "/tmp/videos/%(title)s.%(ext)s")))
+  url)
+(add-to-default-list #'auto-yt-dl 'buffer 'load-hook)
+#+end_src
+
