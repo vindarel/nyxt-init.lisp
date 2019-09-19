@@ -23,3 +23,15 @@
             new-url))
         url)))
 (add-to-default-list #'old-reddit-hook 'buffer 'load-hook)
+
+(defun no-facebook-hook (url)
+  "Always redirect to Diaspora."
+  (let ((uri (quri:uri url)))
+    (if (search "facebook.com" (quri:uri-host uri))
+        (progn
+          (setf (quri:uri-host uri) "pod.geraspora.de")
+          (let ((new-url (quri:render-uri uri)))
+            (log:info "You shall not go to Facebook!" new-url)
+            new-url))
+        url)))
+(add-to-default-list #'no-facebook-hook 'buffer 'load-hook)
