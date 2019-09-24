@@ -7,6 +7,10 @@ https://github.com/next-browser/next
 https://github.com/atlas-engineer/next/blob/master/documents/MANUAL.org
 
 We're writing it in literate programing with [erudite](https://github.com/mmontone/erudite).
+
+The command required to produce the readme is:
+
+(erudite:erudite #p"README.md" "init.lisp" :output-type :markdown :syntax :erudite)
 If not specified, all code is written in the next package.
 
 ```lisp
@@ -35,7 +39,12 @@ If not specified, all code is written in the next package.
 
 (setf next/file-manager-mode:*open-file-function* #'my-open-videos)
 
-@subsection Git cloner
+```
+
+## Git cloner
+
+
+```lisp
 (setf next/vcs:*vcs-projects-roots* '("~/projets"
                                       "~/work"
                                       "~/bacasable/lisp-projects"
@@ -68,7 +77,7 @@ If not specified, all code is written in the next package.
 
 ## Facebook to Diaspora hook
 
-Not that I'm using Facebook :D
+For *you* who shouldn't use Facebook ;)
 
 ```lisp
 (defun no-facebook-hook (url)
