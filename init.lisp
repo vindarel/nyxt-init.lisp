@@ -1,6 +1,4 @@
-#|
-
-@section My Next browser init file
+#| @section My Next browser init file
 
 https://github.com/next-browser/next
 
@@ -8,8 +6,7 @@ https://github.com/atlas-engineer/next/blob/master/documents/MANUAL.org
 
 We're writing it in literate programing with @link{https://github.com/mmontone/erudite}{erudite}.
 
-If not specified, all code is writting in the next package.
-|#
+If not specified, all code is written in the next package.|#
 
 (in-package :next)
 
