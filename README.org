@@ -11,18 +11,25 @@ To explore: literate programing. https://github.com/mmontone/erudite
 * Hooks
 ** Unused
 
-These  are  working©,  but  I  don't  use  them  (they're  either  too
-revolutionnary either too dumb :p ).
 
-*** Automatically download a Youtube video
+** Drafts
+
+Those are either not possible at the moment either not finished.
+
+*** Sort downloads by extension
+
+Not currently possible, needs work upstream.
 
 #+begin_src lisp
-(defun auto-yt-dl (url)
-  "Download this url asynchronously to /tmp/videos, according youtube-dl is installed globally."
-  (when (search "www.youtube.com" url)
-    (log:info "Youtube: downloading ~a" url)
-    (uiop:launch-program (list "youtube-dl" url "-o" "/tmp/videos/%(title)s.%(ext)s")))
+(defun sort-downloads-hook (url)
+  (log:info "url is ~a" url)
+  (match (pathname-type url)
+    ((or "pdf")
+     (ensure-directories-exist
+      ;; TODO: change download path
+      (merge-pathnames download-manager::*default-download-directory* "pdfs"))))
+  ;; return the url
   url)
-(add-to-default-list #'auto-yt-dl 'buffer 'load-hook)
+(push #'sort-downloads-hook (get-default 'remote-interface 'before-download-hook))
 #+end_src
 

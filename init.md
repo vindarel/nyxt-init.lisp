@@ -1,20 +1,30 @@
-#|
 
-@section My Next browser init file
+
+
+# My Next browser init file
+
 
 https://github.com/next-browser/next
 
 https://github.com/atlas-engineer/next/blob/master/documents/MANUAL.org
 
-We're writing it in literate programing with @link{https://github.com/mmontone/erudite}{erudite}.
+We're writing it in literate programing with [erudite](https://github.com/mmontone/erudite).
 
 If not specified, all code is writting in the next package.
-|#
+
+```lisp
 
 (in-package :next)
 
-;; @section Commands configuration
-;; @subsection Open files with my preferred program (videos with mpv)
+```
+
+# Commands configuration
+
+
+## Open files with my preferred program (videos with mpv)
+
+
+```lisp
 
 (defun my-open-videos (filename)
   "Open videos with mpv."
@@ -35,8 +45,15 @@ If not specified, all code is writting in the next package.
                                       "~/common-lisp"
                                       "~/quicklisp/local-projects"))
 
-;; @section Hooks
-;; @subsection Old reddit hook
+```
+
+# Hooks
+
+
+## Old reddit hook
+
+
+```lisp
 
 (defun old-reddit-hook (url)
   "Enforce old reddit."
@@ -50,8 +67,13 @@ If not specified, all code is writting in the next package.
         url)))
 (add-to-default-list #'old-reddit-hook 'buffer 'load-hook)
 
-;; @subsection Facebook to Diaspora hook
-;; Not that I'm using Facebook :D
+```
+
+## Facebook to Diaspora hook
+
+Not that I'm using Facebook :D
+
+```lisp
 (defun no-facebook-hook (url)
   "Always redirect to Diaspora."
   (let ((uri (quri:uri url)))
@@ -64,20 +86,21 @@ If not specified, all code is writting in the next package.
         url)))
 (add-to-default-list #'no-facebook-hook 'buffer 'load-hook)
 
-#|
-@subsection Unused hooks
+```
+
+
+## Unused hooks
+
 These  are  working©,  but  I  don't  use  them  (they're  either  too
 revolutionnary either too dumb :p ).
-|#
 
-#|
-@subsubsection Automatically download Youtube videos
-|#
 
-;; (defun auto-yt-dl (url)
-;;   "Download this url asynchronously to /tmp/videos, according youtube-dl is installed globally."
-;;   (when (search "www.youtube.com" url)
-;;     (log:info "Youtube: downloading ~a" url)
-;;     (uiop:launch-program (list "youtube-dl" url "-o" "/tmp/videos/%(title)s.%(ext)s")))
-;;   url)
-;; (add-to-default-list #'auto-yt-dl 'buffer 'load-hook)
+### Automatically download Youtube videos
+
+(defun auto-yt-dl (url)
+"Download this url asynchronously to /tmp/videos, according youtube-dl is installed globally."
+(when (search "www.youtube.com" url)
+(log:info "Youtube: downloading ~a" url)
+(uiop:launch-program (list "youtube-dl" url "-o" "/tmp/videos/%(title)s.%(ext)s")))
+url)
+(add-to-default-list #'auto-yt-dl 'buffer 'load-hook)
