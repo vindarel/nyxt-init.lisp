@@ -74,10 +74,10 @@ revolutionnary either too dumb :p ).
 @subsubsection Automatically download Youtube videos
 |#
 
-;; (defun auto-yt-dl (url)
-;;   "Download this url asynchronously to /tmp/videos, according youtube-dl is installed globally."
-;;   (when (search "www.youtube.com" url)
-;;     (log:info "Youtube: downloading ~a" url)
-;;     (uiop:launch-program (list "youtube-dl" url "-o" "/tmp/videos/%(title)s.%(ext)s")))
-;;   url)
-;; (add-to-default-list #'auto-yt-dl 'buffer 'load-hook)
+(defun auto-yt-dl (url)
+  "Download this url asynchronously to /tmp/videos, according youtube-dl is installed globally."
+  (when (search "www.youtube.com" url)
+    (log:info "Youtube: downloading ~a" url)
+    (uiop:launch-program (list "youtube-dl" url "-o" "/tmp/videos/%(title)s.%(ext)s")))
+  url)
+(format t "when finished, do: add-to-default-list #'auto-yt-dl 'buffer 'load-hook")
