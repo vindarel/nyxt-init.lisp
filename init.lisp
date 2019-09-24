@@ -35,3 +35,10 @@
             new-url))
         url)))
 (add-to-default-list #'no-facebook-hook 'buffer 'load-hook)
+
+;; Git cloner
+(setf next/vcs:*vcs-projects-roots* '("~/projets"
+                                      "~/work"
+                                      "~/bacasable/lisp-projects"
+                                      "~/common-lisp"
+                                      "~/quicklisp/local-projects"))
