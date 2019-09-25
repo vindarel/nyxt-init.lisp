@@ -22,22 +22,29 @@ If not specified, all code is written in the next package.
 # Commands configuration
 
 
-## Open files with my preferred program (videos with mpv)
+## Open files with my preferred program
 
 
 ```lisp
 
-(defun my-open-videos (filename)
-  "Open videos with mpv."
-  (handler-case (let ((extension (pathname-type filename)))
-                  (match extension
-                    ((or "flv" "mkv" "mp4")
-                     (uiop:launch-program (list "mpv" filename)))
-                    (_
-                     (next/file-manager-mode:open-file-function filename))))
-    (error (c) (log:error "Error opening pdf ~a: ~a" filename c))))
+(defun my-open-files (filename)
+  "Open videos with mpv, directories with emacsclient."
+  (let ((args)
+        (extension (pathname-type filename)))
+    (cond
+      ((uiop:directory-pathname-p filename)
+       (log:info "Opening ~a with emacsclient." filename)
+       (setf args (list "emacsclient" filename)))
 
-(setf next/file-manager-mode:*open-file-function* #'my-open-videos)
+      ((member extension '("flv" "mkv" "mp4") :test #'string-equal)
+       (setf args (list "mpv" filename))))
+
+    (handler-case (if args
+                      (uiop:launch-program args)
+                      (next/file-manager-mode:open-file-function filename))
+      (error (c) (log:error "Error opening pdf ~a: ~a" filename c)))))
+
+(setf next/file-manager-mode:*open-file-function* #'my-open-files)
 
 ```
 
@@ -50,6 +57,13 @@ If not specified, all code is written in the next package.
                                       "~/bacasable/lisp-projects"
                                       "~/common-lisp"
                                       "~/quicklisp/local-projects"))
+
+```
+My default username.
+We can also set *vcs-usernames-alist* for github.com and other domains.
+
+```lisp
+(setf next/vcs::*vcs-username* "vindarel")
 
 ```
 
