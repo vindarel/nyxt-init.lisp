@@ -15,7 +15,7 @@ If not specified, all code is written in the next package.|#
 (in-package :next)
 
 ;; @section Commands configuration
-;; @subsection Open files with my preferred program (videos with mpv)
+;; @subsection Open files with my preferred program
 
 (defun my-open-files (filename)
   "Open videos with mpv, directories with emacsclient."
@@ -42,6 +42,10 @@ If not specified, all code is written in the next package.|#
                                       "~/bacasable/lisp-projects"
                                       "~/common-lisp"
                                       "~/quicklisp/local-projects"))
+
+;; My default username.
+;; We can also set *vcs-usernames-alist* for github.com and other domains.
+(setf next/vcs::*vcs-username* "vindarel")
 
 ;; @section Hooks
 ;; @subsection Old reddit hook
