@@ -2,15 +2,28 @@
 # My Next browser init file
 
 
-https://github.com/next-browser/next
-
-https://github.com/atlas-engineer/next/blob/master/documents/MANUAL.org
+- [Next browser](https://github.com/next-browser/next)
+- [Next manual.org](https://github.com/atlas-engineer/next/blob/master/documents/MANUAL.org)
 
 We're writing it in literate programing with [erudite](https://github.com/mmontone/erudite).
 
+---
 The command required to produce the readme is:
 
+```
 (erudite:erudite #p"README.md" "init.lisp" :output-type :markdown :syntax :erudite)
+```
+
+About Erudite:
+
+We currently use the erudite syntax and produce markdown output. It
+will be possible in the next version (or now if you add a missing piece,
+see the issues) to use markdown for input and output (but probably not
+to produce other output).
+
+A *C-c ~* in Slime is useful to sync the package and directory.
+
+---
 If not specified, all code is written in the next package.
 
 ```lisp

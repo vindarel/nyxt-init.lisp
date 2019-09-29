@@ -1,16 +1,29 @@
 #| @section My Next browser init file
 
-https://github.com/next-browser/next
-
-https://github.com/atlas-engineer/next/blob/master/documents/MANUAL.org
+- @link{https://github.com/next-browser/next}{Next browser}
+- @link{https://github.com/atlas-engineer/next/blob/master/documents/MANUAL.org}{Next manual.org}
 
 We're writing it in literate programing with @link{https://github.com/mmontone/erudite}{erudite}.
 
+---
 The command required to produce the readme is:
 
+@verbatim
 (erudite:erudite #p"README.md" "init.lisp" :output-type :markdown :syntax :erudite)
+@end verbatim
 
-If not specified, all code is written in the next package.|#
+About Erudite:
+
+We currently use the erudite syntax and produce markdown output. It
+will be possible in the next version (or now if you add a missing piece,
+see the issues) to use markdown for input and output (but probably not
+to produce other output).
+
+A @emph{C-c ~} in Slime is useful to sync the package and directory.
+
+---
+If not specified, all code is written in the next package.
+|#
 
 (in-package :next)
 
