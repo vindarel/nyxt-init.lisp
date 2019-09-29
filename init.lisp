@@ -32,9 +32,19 @@ If not specified, all code is written in the next package.|#
     (handler-case (if args
                       (uiop:launch-program args)
                       (next/file-manager-mode:open-file-function filename))
-      (error (c) (log:error "Error opening pdf ~a: ~a" filename c)))))
+      (error (c) (log:error "Error opening ~a: ~a" filename c)))))
 
 (setf next/file-manager-mode:*open-file-function* #'my-open-files)
+
+;; @subsection Open the home directory in the browser to see all files (file://)
+;; from @link{https://github.com/tviti/next-cfg/}{https://github.com/tviti/next-cfg/}
+
+(define-command open-home-dir ()
+  "Open my home directory in a browser window (useful for viewing html exports
+e.g. from org-mode or an Rmarkdown doc)."
+  (let ((url (concatenate 'string "file://"
+			  (directory-namestring (truename "~/")))))
+    (set-url url)))
 
 ;; @subsection Git cloner
 (setf next/vcs:*vcs-projects-roots* '("~/projets"
