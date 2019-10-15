@@ -68,7 +68,7 @@ e.g. from org-mode or an Rmarkdown doc)."
 
 ;; My default username.
 ;; We can also set *vcs-usernames-alist* for github.com and other domains.
-(setf next/vcs::*vcs-username* "vindarel")
+(setf next/vcs:*vcs-username* "vindarel")
 
 ;; @section Hooks
 ;; @subsection Old reddit hook
