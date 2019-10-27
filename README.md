@@ -156,6 +156,8 @@ revolutionnary either too dumb :p ).
   url)
 (format t "when finished, do: add-to-default-list #'auto-yt-dl 'buffer 'load-hook")
 
+```
+
 ### FIP radio
 
 Save the current playing song's title into a text file.
