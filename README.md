@@ -155,4 +155,69 @@ revolutionnary either too dumb :p ).
     (uiop:launch-program (list "youtube-dl" url "-o" "/tmp/videos/%(title)s.%(ext)s")))
   url)
 (format t "when finished, do: add-to-default-list #'auto-yt-dl 'buffer 'load-hook")
+
+### FIP radio
+
+Save the current playing song's title into a text file.
+Caution: it seems the website can lag to a couple minutes behind the music :S At least we also save the current time, so we could go back search for the title.
+
+```lisp
+
+(defparameter *fip-home-url* "https://www.fip.fr/")
+
+(defparameter *fip-database-file* #p"~/.config/next/fip.txt"
+              "Where to save our songs.")
+
+```
+we'll want to add dependencies to the binary.
+
+```lisp
+(ql:quickload '("lquery"
+                "access"
+```
+"dexador" ;; in Next.
+"local-time" ;; in Next.
+
+```lisp
+                ))
+
+(defun fip-current-song ()
+  "Return the artist, the song, the year (multiple values)."
+  (handler-case
+      (let* ((html (dex:get *fip-home-url*))
+             (parsed (lquery:$ (initialize html)))
+             (title (access:access ;; get first elt of vector, don't fail if out of bounds.
+                     (lquery:$ parsed ".now-info-title" (text)) ; returns a vector.
+                     0))
+             (artist/year (access:access
+                           (lquery:$ parsed ".now-info-subtitle" (text))
+                           0))
+             (matches (when artist/year
+```
+returns a vector with the matched strings.
+see the Cookbook.
+
+```lisp
+                        (nth-value 1 (ppcre:scan-to-strings "\(.*\) \((.*\))" artist/year))))
+             (artist (when matches
+                       (access:access matches
+                                      0)))
+             (year (when matches
+                     (access:access matches
+                                    1))))
+        (format t "FIP: artist: ~a, song ~a, year ~a~&" artist title year)
+        (values artist title year))
+    (error (c)
+      (format t "Getting FIP current song failed: ~a~&" c))))
+
+(define-command fip-save-current-song ()
+  "Save the current song title, artist and year of the album playing on fip on file."
+  (multiple-value-bind (artist title year)
+      (fip-current-song)
+    (with-open-file (f *fip-database-file*
+                       :direction :output
+                       :if-does-not-exist :create
+                       :if-exists :append)
+      (format f "~s~&" (list :artist artist :song title :year year
+                             :date (local-time:now))))))
 ```
