@@ -52,7 +52,7 @@ If not specified, all code is written in the next package.
 ;; @subsection Open the home directory in the browser to see all files (file://)
 ;; from @link{https://github.com/tviti/next-cfg/}{https://github.com/tviti/next-cfg/}
 
-(define-command open-home-dir ()
+(define-command home-directory ()
   "Open my home directory in a browser window (useful for viewing html exports
 e.g. from org-mode or an Rmarkdown doc)."
   (let ((url (concatenate 'string "file://"

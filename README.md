@@ -67,7 +67,7 @@ from [https://github.com/tviti/next-cfg/](https://github.com/tviti/next-cfg/)
 
 ```lisp
 
-(define-command open-home-dir ()
+(define-command home-directory ()
   "Open my home directory in a browser window (useful for viewing html exports
 e.g. from org-mode or an Rmarkdown doc)."
   (let ((url (concatenate 'string "file://"
@@ -91,7 +91,7 @@ My default username.
 We can also set *vcs-usernames-alist* for github.com and other domains.
 
 ```lisp
-(setf next/vcs::*vcs-username* "vindarel")
+(setf next/vcs:*vcs-username* "vindarel")
 
 ```
 
