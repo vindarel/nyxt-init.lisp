@@ -120,6 +120,10 @@ revolutionnary either too dumb :p ).
 ;; @subsubsection FIP radio
 
 ;; The @link{https://www.fip.fr/}{fip radio} is great: eclectic music without any ads.
+;; We developed the following commands:
+;; - fip-save-current-song to save the currently playing song to disk
+;; - fip-view-saved-songs to show them all in a new buffer (with a link to a youtube search)
+;; - fip-listen-saved-song to fuzzy-select a song and search it on youtube (where we can use `download-video`).
 
 ;; Save the current playing song's title into a text file.
 ;; Caution: it seems the website can lag to a couple minutes behind the music :S At least we also save the current time, so we could go back search for the title.
@@ -229,3 +233,24 @@ revolutionnary either too dumb :p ).
     (error (c)
       (echo-warning "Error reading our fip songs file: ~&" c)
       (format t "Error reading our fip songs file: ~a~&" c))))
+
+(defun songs-completion-filter (input)
+  (let* ((forms (uiop:read-file-forms *fip-database-file*))
+         (strings (mapcar (lambda (elt)
+                            (format nil "~a - ~a"
+                                    (access:access elt :artist)
+                                    (access:access elt :song)))
+                          forms)))
+    (fuzzy-match input strings)))
+
+(define-command fip-listen-saved-song ()
+  "Pick one song that was saved on disk, and search it on Youtube."
+  (with-result (selection (read-from-minibuffer
+                           (make-instance 'minibuffer
+                                          :default-modes '(minibuffer-mode)
+                                          :input-prompt "pick a song"
+                                          :completion-function #'songs-completion-filter)))
+
+    (format t "~&choice: ~a~&" selection)
+    (set-url-to-buffer (format nil  "https://www.youtube.com/results?search_query=~a" selection)
+                       :new-buffer-p t)) )
