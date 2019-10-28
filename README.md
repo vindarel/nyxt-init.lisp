@@ -160,6 +160,7 @@ revolutionnary either too dumb :p ).
 
 ### FIP radio
 
+The [fip radio](https://www.fip.fr/) is great: eclectic music without any ads.
 Save the current playing song's title into a text file.
 Caution: it seems the website can lag to a couple minutes behind the music :S At least we also save the current time, so we could go back search for the title.
 
@@ -171,16 +172,17 @@ Caution: it seems the website can lag to a couple minutes behind the music :S At
               "Where to save our songs.")
 
 ```
-we'll want to add dependencies to the binary.
+Quickloading a library adds an extra startup time.
+At some point we'll want to create a Next binary with those libraries.
 
 ```lisp
 (ql:quickload '("lquery"
-                "access"
 ```
-"dexador" ;; in Next.
-"local-time" ;; in Next.
+access is a library for consistent and nested access to all data structures.
 
 ```lisp
+                "access"
+                "cl-punch"
                 ))
 
 (defun fip-current-song ()
@@ -207,19 +209,78 @@ see the Cookbook.
              (year (when matches
                      (access:access matches
                                     1))))
-        (format t "FIP: artist: ~a, song ~a, year ~a~&" artist title year)
+        (echo "FIP: artist: ~a, song ~a - ~a~&" artist title year)
         (values artist title year))
     (error (c)
-      (format t "Getting FIP current song failed: ~a~&" c))))
+      (echo-warning t "Getting FIP current song failed: ~a~&" c))))
 
 (define-command fip-save-current-song ()
   "Save the current song title, artist and year of the album playing on fip on file."
   (multiple-value-bind (artist title year)
       (fip-current-song)
-    (with-open-file (f *fip-database-file*
-                       :direction :output
-                       :if-does-not-exist :create
-                       :if-exists :append)
-      (format f "~s~&" (list :artist artist :song title :year year
-                             :date (local-time:now))))))
+    (if artist
+        (with-open-file (f *fip-database-file*
+                           :direction :output
+                           :if-does-not-exist :create
+                           :if-exists :append)
+          (let ((*print-pretty* nil))
+```
+Pretty printing will insert a line break at around 80 characters,
+between :date and the date, making it un-readable with uiop:read-file-forms.
+
+```lisp
+            (format f "~s~&" (list :artist artist :song title :year year
+                                   :date (local-time:format-timestring nil (local-time:now))))))
+        (echo "fip: no artist found."))))
+
+(defun song-alist2html (alist)
+  "From an alist with :artist, :title and all, return html."
+  (format nil "~a, ~a ~a"
+          (access:access alist :artist)
+          (access:access alist :song)
+          (access:access alist :year)))
+
+(defun list2html (list)
+  (cl-markup:markup
+   (:head)
+   (:body
+    (:h1 "fip songs")
+    (:ul
+     (loop for elt in list
+        collect (cl-markup:markup (:li (:span (song-alist2html elt))
+                                       (:span "  "
+                                              (:a :href (format nil "https://www.youtube.com/results?search_query=~a+~a"
+                                                                (access:access elt :artist)
+                                                                (access:access elt :song))
+                                                  "youtube ⮱")))))))))
+
+(define-command fip-view-saved-songs ()
+  "Show the fip songs we saved, along with a youtube search link."
+  (let ((buffer (find-if (lambda (b)
+                           (string= "*fip*" (title b)))
+                         (alexandria:hash-table-values (buffers *interface*))))
+        (forms (uiop:read-file-forms *fip-database-file*)))
+    (unless buffer
+      (setf buffer (make-buffer
+                    :title "*fip*"
+                    :modes (cons 'help-mode
+                                 (get-default 'buffer 'default-modes)))))
+    (let* ((content (list2html forms))
+           (insert-content (ps:ps (setf (ps:@ document body |innerHTML|)
+                                        (ps:lisp content)))))
+      (rpc-buffer-evaluate-javascript buffer insert-content))
+    (set-current-buffer buffer)
+    buffer))
+
+(defun fip-print-saved-songs (&key verbose)
+  "Print the fip songs we saved."
+  (handler-case
+      (let ((forms (uiop:read-file-forms *fip-database-file*)))
+        ;XXX: table output with vindarel/cl-ansi-term ?
+        (mapcar (lambda (it)
+                  (format t "~a - ~a ~a~&" (second it) (fourth it) (sixth it)))
+                forms))
+    (error (c)
+      (echo-warning "Error reading our fip songs file: ~&" c)
+      (format t "Error reading our fip songs file: ~a~&" c))))
 ```
